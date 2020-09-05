@@ -9,7 +9,7 @@ const authenticateUser = async (req, res, next) => {
   let message = null;
   // Parse the user's credentials from the Authorization header.
   const credentials = auth(req);
-  // If the user's credentials are available...
+  // If the user's credentials are available....
   if (credentials) {
     // Attempt to retrieve the user from the data store
     // by their username (i.e. the user's "key"
@@ -17,8 +17,8 @@ const authenticateUser = async (req, res, next) => {
 
     const user = await User.findOne({
       where: {
-        emailAddress: credentials.name
-      }
+        emailAddress: credentials.name,
+      },
     });
 
     // If a user was successfully retrieved from the data store...
@@ -85,19 +85,16 @@ router.get(
         "title",
         "description",
         "estimatedTime",
-        "materialsNeeded"
+        "materialsNeeded",
       ],
       include: [
         {
           model: User,
-          attributes: ["id", "firstName", "lastName", "emailAddress"]
-        }
-      ]
+          attributes: ["id", "firstName", "lastName", "emailAddress"],
+        },
+      ],
     });
-    res
-      .status(200)
-      .json(courses)
-      .end();
+    res.status(200).json(courses).end();
   })
 );
 
@@ -107,7 +104,7 @@ router.get(
     // 200 Returns a single course (including the user that owns the course) for the provided course ID
     const course = await Course.findOne({
       where: {
-        id: req.params.id
+        id: req.params.id,
       },
       attributes: [
         "id",
@@ -115,26 +112,20 @@ router.get(
         "title",
         "description",
         "estimatedTime",
-        "materialsNeeded"
+        "materialsNeeded",
       ],
       include: [
         {
           model: User,
-          attributes: ["id", "firstName", "lastName", "emailAddress"]
-        }
-      ]
+          attributes: ["id", "firstName", "lastName", "emailAddress"],
+        },
+      ],
     });
 
     if (course) {
-      res
-        .status(200)
-        .json(course)
-        .end();
+      res.status(200).json(course).end();
     } else {
-      res
-        .status(400)
-        .json({ message: "Course not found" })
-        .end();
+      res.status(400).json({ message: "Course not found" }).end();
     }
   })
 );
@@ -149,22 +140,16 @@ router.post(
     try {
       const newCourse = await Course.create(req.body);
 
-      res
-        .status(201)
-        .location(`/courses/${newCourse.id}`)
-        .end();
+      res.status(201).location(`/courses/${newCourse.id}`).end();
     } catch (error) {
       console.log("THERE WAS A PROBLEM");
       if (
         error.name === "SequelizeValidationError" ||
         "SequelizeUniqueConstraintError"
       ) {
-        error.message = error.errors.map(error => error.message);
+        error.message = error.errors.map((error) => error.message);
 
-        res
-          .status(400)
-          .json({ error: error.message })
-          .end();
+        res.status(400).json({ error: error.message }).end();
       } else {
         throw error;
       }
@@ -185,17 +170,11 @@ router.put(
         course
           .update(req.body)
           .then(() => {
-            res
-              .status(204)
-              .json(course)
-              .end();
+            res.status(204).json(course).end();
           })
-          .catch(error => {
-            error.message = error.errors.map(error => error.message);
-            res
-              .status(400)
-              .json({ message: error.message })
-              .end();
+          .catch((error) => {
+            error.message = error.errors.map((error) => error.message);
+            res.status(400).json({ message: error.message }).end();
           });
       } else {
         console.log(
@@ -205,16 +184,13 @@ router.put(
           .status(400)
           .json({
             message:
-              "The supplied course ID does not match the course ID saved in database."
+              "The supplied course ID does not match the course ID saved in database.",
           })
           .end();
       }
     } else {
       console.log("You do not own this course.");
-      res
-        .status(403)
-        .json({ message: "You do not own this course." })
-        .end();
+      res.status(403).json({ message: "You do not own this course." }).end();
     }
   })
 );
@@ -229,10 +205,7 @@ router.delete(
       await Course.destroy({ where: { id: req.params.id } });
       res.status(204).end();
     } else {
-      res
-        .status(403)
-        .json({ message: "You do not own this course." })
-        .end();
+      res.status(403).json({ message: "You do not own this course." }).end();
     }
   })
 );
