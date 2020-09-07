@@ -1,3 +1,4 @@
+View the Client repo here: https://github.com/austinkylescott/course-manager-client
 
 # Full Stack JavaScript Techdegree v2 - REST API Project
 
